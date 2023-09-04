@@ -8,7 +8,8 @@ const {
   usuariosPath,
   usuariosDelete,
 } = require("../controllers/usuarios.controllers");
-const { validarCampos } = require("../middlewares/validar-campos");
+const { validarJWT, validarCampos, tieneRole } = require("../middlewares");
+
 const {
   esRoleValido,
   emailExiste,
@@ -47,6 +48,10 @@ router.patch("/", usuariosPath);
 router.delete(
   "/:id",
   [
+    validarJWT,
+    //TO DO : FORZA EL ADMIN ROLE
+    // esAdminRole,
+    tieneRole("ADMIN_ROLE", "VENTAS_ROLE"),
     check("id", "No es un ID valido").isMongoId(),
     check("id").custom(existeUsuarioPorId),
   ],
